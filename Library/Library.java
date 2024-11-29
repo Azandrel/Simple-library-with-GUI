@@ -20,6 +20,24 @@ public class Library {
         System.out.println("Book added: " + book.getTitle());
     }
 
+    public void addOrUpdateBook(Book book, String oldTitle) {
+        if (oldTitle != null) {
+            // Update the existing book if oldTitle is provided
+            for (int i = 0; i < books.size(); i++) {
+                if (books.get(i).getTitle().equalsIgnoreCase(oldTitle)) {
+                    books.set(i, book); // Replace the old book
+                    System.out.println("Book updated: " + book.getTitle());
+                    return;
+                }
+            }
+        }
+    
+        // If oldTitle is null or no match found, add the book as a new entry
+        books.add(book);
+        System.out.println("Book added: " + book.getTitle());
+    }
+    
+    
     public void displayAllBooks(){
         for (int i = 0; i < books.size(); i++) {
                 Book book = books.get(i);
@@ -53,48 +71,47 @@ public class Library {
 
     public Book addBookFromInput() {
         Scanner scanner = new Scanner(System.in);
-        
+    
         System.out.println("Please enter the book title: ");
         String title = scanner.nextLine();
-        
+    
         System.out.println("Please enter the book author: ");
         String author = scanner.nextLine();
-        
+    
         System.out.println("Please enter the year of publishing: ");
         int yearPublished = scanner.nextInt();
-        
+    
+        // Create a new Book object
         Book newBook = new Book(title, author, yearPublished);
-        
-        addBook(newBook);
-        
+    
+        // Use addOrUpdateBook with null for the old title (since this is a new book)
+        addOrUpdateBook(newBook, null);
+    
         return newBook;
-    }
+    }    
 
     public void saveBooksToFile() {
         BufferedWriter writer = null;
         try {
-            FileWriter fileWriter = new FileWriter("library.txt");
-            writer = new BufferedWriter(fileWriter);
-    
-            for (int i = 0; i < books.size(); i++) {
-                Book book = books.get(i); // Access each book by index
+            writer = new BufferedWriter(new FileWriter("library.txt", false));
+            for (Book book : books) {
                 String bookDetails = book.getTitle() + "," + book.getAuthor() + "," + book.getYearPublished();
-                writer.write(bookDetails); // Write book details to the file
-                writer.newLine(); // Add a new line for the next book
+                writer.write(bookDetails);
+                writer.newLine();
             }
         } catch (IOException e) {
             System.out.println("An error occurred while saving books to file: " + e.getMessage());
         } finally {
             try {
                 if (writer != null) {
-                    writer.close(); // Ensure the writer is closed after use
+                    writer.close();
                 }
             } catch (IOException e) {
                 System.out.println("An error occurred while closing the writer: " + e.getMessage());
             }
         }
     }
-    
+     
     public void loadBooksFromFile() {
         BufferedReader reader = null;
         try {
@@ -128,5 +145,24 @@ public class Library {
                 System.out.println("An error occurred while closing the file reader: " + e.getMessage());
             }
         }
-    }    
+    }
+    
+    public Book findBookByAuthor(String author) {
+        for (Book book : books) {
+            if (book.getAuthor().equalsIgnoreCase(author)) { // Case-insensitive match
+                return book;
+            }
+        }
+        return null; // No match found
+    }
+    
+    public Book findBookByYear(int year) {
+        for (Book book : books) {
+            if (book.getYearPublished() == year) {
+                return book;
+            }
+        }
+        return null; // No match found
+    }
+    
 }

@@ -5,150 +5,190 @@ import java.awt.event.ActionListener;
 public class LibraryGUI {
     private JFrame frame;
     private Library myLibrary;
+    private String oldTitle; // Track the old title for editing
 
     public LibraryGUI() {
-        // Initialize library
         myLibrary = new Library();
 
-        // Create and set up the window
         frame = new JFrame("Library System");
-        frame.setSize(400, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(null); // Use absolute positioning for simplicity
-        
+        frame.setSize(600, 600);
+
         addComponents();
 
-        // Display the window
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        new LibraryGUI(); // Create and show the GUI
+    private void addComponents() {
+        // Create Components
+        JLabel titleLabel = new JLabel("Title:");
+        JTextField titleField = new JTextField();
+        JLabel authorLabel = new JLabel("Author:");
+        JTextField authorField = new JTextField();
+        JLabel yearLabel = new JLabel("Year:");
+        JTextField yearField = new JTextField();
+
+        JButton addButton = new JButton("Add Book");
+        JButton viewButton = new JButton("View All Books");
+        JButton editButton = new JButton("Edit Book");
+
+        JTextArea displayArea = new JTextArea();
+        displayArea.setEditable(false);
+
+        JLabel searchLabel = new JLabel("Search:");
+        JTextField searchField = new JTextField();
+        JComboBox<String> searchCriteria = new JComboBox<>(new String[]{"Title", "Author", "Year"});
+        JButton searchButton = new JButton("Search");
+
+        // Set Layout
+        GroupLayout layout = new GroupLayout(frame.getContentPane());
+        frame.setLayout(layout);
+
+        layout.setAutoCreateGaps(true); // Adds gaps between components
+        layout.setAutoCreateContainerGaps(true); // Adds gaps around the container
+
+        // Horizontal Group
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(titleLabel)
+                    .addComponent(titleField))
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(authorLabel)
+                    .addComponent(authorField))
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(yearLabel)
+                    .addComponent(yearField))
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(addButton)
+                    .addComponent(viewButton)
+                    .addComponent(editButton))
+                .addComponent(displayArea)
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(searchLabel)
+                    .addComponent(searchField)
+                    .addComponent(searchCriteria)
+                    .addComponent(searchButton))
+        );
+
+        // Vertical Group
+        layout.setVerticalGroup(
+            layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(titleLabel)
+                    .addComponent(titleField))
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(authorLabel)
+                    .addComponent(authorField))
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(yearLabel)
+                    .addComponent(yearField))
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(addButton)
+                    .addComponent(viewButton)
+                    .addComponent(editButton))
+                .addComponent(displayArea)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(searchLabel)
+                    .addComponent(searchField)
+                    .addComponent(searchCriteria)
+                    .addComponent(searchButton))
+        );
+
+        // Add Action Listeners
+        addListeners(addButton, viewButton, editButton, searchButton, titleField, authorField, yearField, searchField, searchCriteria, displayArea);
     }
 
-    private void addComponents() {
-        // Create and position labels and text fields for book details
-        JLabel titleLabel = new JLabel("Title:");
-        titleLabel.setBounds(20, 20, 100, 30);
-        frame.add(titleLabel);
-
-        JTextField titleField = new JTextField();
-        titleField.setBounds(120, 20, 200, 30);
-        frame.add(titleField);
-
-        JLabel authorLabel = new JLabel("Author:");
-        authorLabel.setBounds(20, 60, 100, 30);
-        frame.add(authorLabel);
-
-        JTextField authorField = new JTextField();
-        authorField.setBounds(120, 60, 200, 30);
-        frame.add(authorField);
-
-        JLabel yearLabel = new JLabel("Year:");
-        yearLabel.setBounds(20, 100, 100, 30);
-        frame.add(yearLabel);
-
-        JTextField yearField = new JTextField();
-        yearField.setBounds(120, 100, 200, 30);
-        frame.add(yearField);
-
-        // Button to add a book
-        JButton addButton = new JButton("Add Book");
-        addButton.setBounds(20, 140, 150, 30);
-        frame.add(addButton);
-
-        // Button to view all books
-        JButton viewButton = new JButton("View All Books");
-        viewButton.setBounds(180, 140, 150, 30);
-        frame.add(viewButton);
-
-        // Text area to display books
-        JTextArea displayArea = new JTextArea();
-        displayArea.setBounds(20, 180, 340, 150);
-        displayArea.setEditable(false); // Make it read-only
-        frame.add(displayArea);
-
-        // Search field and button
-        JLabel searchLabel = new JLabel("Search Book:");
-        searchLabel.setBounds(20, 340, 100, 30);
-        frame.add(searchLabel);
-
-        JTextField searchField = new JTextField();
-        searchField.setBounds(120, 340, 200, 30);
-        frame.add(searchField);
-
-        JButton searchButton = new JButton("Search Book");
-        searchButton.setBounds(120, 380, 150, 30);
-        frame.add(searchButton);
-
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Get the title from the search field
-                String title = searchField.getText();
-                
-                // Search for the book in the library
-                Book foundBook = myLibrary.findBookByTitle(title);
-                
-                // Display the result
-                if (foundBook != null) {
-                    // Display book details if found
-                    displayArea.setText("Book found:\n" + 
-                                        "Title: " + foundBook.getTitle() + "\n" +
-                                        "Author: " + foundBook.getAuthor() + "\n" +
-                                        "Year: " + foundBook.getYearPublished());
-                } else {
-                    // Show message if the book is not found
-                    displayArea.setText("Book not found in the library.");
-                }
-                
-                // Clear the search field after search
-                searchField.setText("");
+    private void addListeners(
+        JButton addButton, JButton viewButton, JButton editButton, JButton searchButton,
+        JTextField titleField, JTextField authorField, JTextField yearField,
+        JTextField searchField, JComboBox<String> searchCriteria, JTextArea displayArea
+    ) {
+        addButton.addActionListener(e -> {
+            String title = titleField.getText();
+            String author = authorField.getText();
+            int year;
+            try {
+                year = Integer.parseInt(yearField.getText());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "Invalid year format.");
+                return;
             }
-        });
-        
 
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String title = titleField.getText();
-                String author = authorField.getText();
-                int year;
-        
-                // Try to parse the year input
+            Book newBook = new Book(title, author, year);
+            myLibrary.addOrUpdateBook(newBook, oldTitle); // Use oldTitle for updates
+            myLibrary.saveBooksToFile();
+
+            JOptionPane.showMessageDialog(frame, "Book saved successfully!");
+            titleField.setText("");
+            authorField.setText("");
+            yearField.setText("");
+            oldTitle = null; // Reset oldTitle after saving
+        });
+
+        viewButton.addActionListener(e -> {
+            StringBuilder allBooks = new StringBuilder();
+            for (Book book : myLibrary.getBooks()) {
+                allBooks.append(book.getTitle())
+                        .append(" by ")
+                        .append(book.getAuthor())
+                        .append(" (")
+                        .append(book.getYearPublished())
+                        .append(")\n");
+            }
+            displayArea.setText(allBooks.toString());
+        });
+
+        searchButton.addActionListener(e -> {
+            String criteria = (String) searchCriteria.getSelectedItem();
+            String searchText = searchField.getText();
+            Book foundBook = null;
+
+            if ("Title".equals(criteria)) foundBook = myLibrary.findBookByTitle(searchText);
+            else if ("Author".equals(criteria)) foundBook = myLibrary.findBookByAuthor(searchText);
+            else if ("Year".equals(criteria)) {
                 try {
-                    year = Integer.parseInt(yearField.getText());
+                    int year = Integer.parseInt(searchText);
+                    foundBook = myLibrary.findBookByYear(year);
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(frame, "Invalid year format. Please enter a number.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Invalid year format.");
                     return;
                 }
-        
-                // Add book to library
-                Book newBook = new Book(title, author, year);
-                myLibrary.addBook(newBook);
-        
-                // Save the book to file immediately after adding
-                myLibrary.saveBooksToFile();
-                JOptionPane.showMessageDialog(frame, "Book added and saved successfully!");
-        
-                // Clear the input fields
-                titleField.setText("");
-                authorField.setText("");
-                yearField.setText("");
+            }
+
+            if (foundBook != null) {
+                displayArea.setText("Found Book:\n" + foundBook.getTitle() + " by " +
+                        foundBook.getAuthor() + " (" + foundBook.getYearPublished() + ")");
+            } else {
+                displayArea.setText("Book not found.");
             }
         });
-        
 
-        // Add ActionListener for View All Books button
-        viewButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Retrieve and display all books
-                StringBuilder allBooks = new StringBuilder();
-                for (Book book : myLibrary.getBooks()) {
-                    allBooks.append(book.getTitle()).append(" by ").append(book.getAuthor()).append(" (").append(book.getYearPublished()).append(")\n");
+        editButton.addActionListener(e -> {
+            String criteria = (String) searchCriteria.getSelectedItem();
+            String searchText = searchField.getText();
+            Book foundBook = null;
+
+            if ("Title".equals(criteria)) foundBook = myLibrary.findBookByTitle(searchText);
+            else if ("Author".equals(criteria)) foundBook = myLibrary.findBookByAuthor(searchText);
+            else if ("Year".equals(criteria)) {
+                try {
+                    int year = Integer.parseInt(searchText);
+                    foundBook = myLibrary.findBookByYear(year);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Invalid year format.");
+                    return;
                 }
-                displayArea.setText(allBooks.toString());
+            }
+
+            if (foundBook != null) {
+                oldTitle = foundBook.getTitle();
+                titleField.setText(foundBook.getTitle());
+                authorField.setText(foundBook.getAuthor());
+                yearField.setText(String.valueOf(foundBook.getYearPublished()));
+                JOptionPane.showMessageDialog(frame, "Edit the details and press 'Add Book' to save changes.");
+            } else {
+                JOptionPane.showMessageDialog(frame, "Book not found.");
             }
         });
     }

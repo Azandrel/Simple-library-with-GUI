@@ -3,3 +3,5 @@ Fall of Hyperion,Dan Simmons,1990
 Swiat Przeistoczonych Tom 1,Wasilij Machanienko,2023
 Swiat Przeistoczonych Tom 2,Wasilij Machanienko,2024
 Harry Potter,J.K. Rowling,2000
+Zew Cthulu,Lovecraft,1925
+Painted Man,Peter V. Brett,2008
